@@ -1,0 +1,5 @@
+﻿  main.cpp
+  stack.cpp
+  正在生成代码...
+c:\users\administrator\source\repos\evaluateexpression\evaluateexpression\stack.cpp(120): warning C4715: “operate”: 不是所有的控件路径都返回值
+  evaluateexpression.vcxproj -> C:\Users\Administrator\source\repos\evaluateexpression\Debug\evaluateexpression.exe
