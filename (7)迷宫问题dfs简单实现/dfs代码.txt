@@ -1,0 +1,102 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+//定义方向数组
+typedef struct Direction
+{
+	int increaX;
+	int increaY;
+}Direction;
+Direction direct[4] = { {0,1},{1,0},{ 0,-1},{-1,0} };
+int maze[100][100] = { 0 };//迷宫数组，1表示空地，2表示障碍物
+int visited[100][100] = { 0 };//访问状态标志数组，0表示未访问，1表示已访问
+int endx, endy, startx, starty;//终点坐标与起点坐标
+int min = 999999;//从迷宫起点到终点最短步数(赋一个较大的初值)
+int m, n;
+int count = 0;
+int shortPath[100][100] = { 0 };//保存最短路径
+//(x,y)表示当前位置，step步数（从起点到当前位置的步数）
+void dfs(int x, int y, int step)
+{
+	int i,j;
+	int rx;
+	int ry;
+	//1.如果当前位置为终点
+	//试探更短的其他路径
+	if (x == endx && y == endy)
+	{
+		count++;
+		printf("第%d次试探的路径:\n",count);
+		for (i = 1; i <= m; i++)
+		{
+			for (j = 1; j <= n; j++)
+			{
+				printf("%d\t", visited[i][j]);
+			}
+			printf("\n");
+		}
+		if (step < min)
+		{
+			min = step;
+			for (i = 1; i <= m; i++)
+			{
+				for (j = 1; j <= n; j++)
+				{
+					shortPath[i][j]=visited[i][j];
+				}	
+			}
+			return;
+		}
+	}
+	//2.如果当前位置并非目标位置，
+	//找到下一个可以到达的位置
+	//顺时针方向寻找，按照右下左上的顺序
+	for (i = 0; i < 4; i++)
+	{
+		//计算下一个位置的坐标
+		rx = x + direct[i].increaX;
+		ry = y + direct[i].increaY;
+		//判断该位置是否可以到达
+		//1表示空地，2表示障碍物
+		//0表示未访问，1表示已访问
+		if (maze[rx][ry] == 1 && visited[rx][ry] == 0)
+		{
+			visited[rx][ry] = 1;//置为已访问
+			//从该位置出发深度优先遍历寻找目标位置
+			dfs(rx, ry, step + 1);
+			visited[rx][ry] = 0;//回溯，寻找其他的路径
+		}
+	}
+		return;
+}
+int main()
+{
+	int i, j;
+	printf("请输入行数与列数(迷宫数组的行号与列号均从1开始):");
+	scanf("%d%d",&m, &n);
+	printf("输入迷宫数组(编号为0的行与列没有使用)\n");
+	for (i = 1; i <= m; i++)
+	{
+		for (j = 1; j <= n; j++)
+		{
+			scanf("%d", &maze[i][j]);
+		}
+	}
+	printf("请输入迷宫的起点与终点的坐标:");
+	scanf("%d%d%d%d",&startx,&starty, &endx, &endy);
+	visited[startx][starty] = 1;//起点置为已访问
+	dfs(startx, starty, 0);
+	printf("最短路径的长度为:\n");
+	printf("%d\n", min);
+	printf("dfs遍历试探次数为:\n");
+	printf("%d\n", count);
+	printf("最短路径为(其中的一条):\n");
+	for (i = 1; i <= m; i++)
+	{
+		for (j = 1; j <= n; j++)
+		{
+			printf("%d\t", shortPath[i][j]);
+		}
+		printf("\n");
+	}
+	return 0;
+}
